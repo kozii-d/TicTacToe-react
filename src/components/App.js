@@ -94,6 +94,10 @@ const App = () => {
         checkEndGame();
     }, [winner]);
 
+    useEffect(() => {
+        createCells();
+    }, [isEndGame]);
+
     const winnerText = winner ? `Winner is player '${winner}'!` : 'Draw!';
     const activePlayerText = `Active player: '${activePlayer}'`
 
