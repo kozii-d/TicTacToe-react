@@ -1,0 +1,20 @@
+@import 'vars';
+
+// Blocks
+@import "cell";
+@import "gamefield";
+@import "info";
+@import "wrapper";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 16px;
+}
+
+p {
+  margin: 0;
+}

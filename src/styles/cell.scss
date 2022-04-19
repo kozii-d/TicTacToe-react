@@ -1,0 +1,22 @@
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+  cursor: pointer;
+
+  &_x {
+    color: #5050ff;
+  }
+
+  &_o {
+    color: #e24545;
+  }
+
+  &__content {
+    line-height: 1;
+    font-size: 100px;
+  }
+}
