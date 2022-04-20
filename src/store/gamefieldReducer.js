@@ -10,7 +10,9 @@ const defaultState = {
 export const gamefieldReducer = (state = defaultState, action) => {
     switch (action.type) {
         case 'UPDATE_GAMEFIELD':
-            return {...action.payload}
+            return {...state, gamefield: action.payload}
+        case 'RESTART':
+            return defaultState;
 
         default:
             return state;

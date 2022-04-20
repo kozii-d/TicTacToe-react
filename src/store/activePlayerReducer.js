@@ -8,6 +8,8 @@ export const activePlayerReducer = (state = defaultState, action) => {
     switch (action.type) {
         case 'TOGGLE_ACTIVE_PLAYER':
             return {...state, activePlayer: action.payload}
+        case 'RESTART':
+            return defaultState;
 
         default:
             return state;

@@ -32,11 +32,9 @@ const getWinner = (gamefield) => {
 };
 
 const App = () => {
-
     const dispatch = useDispatch();
     const gamefield = useSelector(state => state.gamefieldReducer.gamefield);
     const activePlayer = useSelector(state => state.activePlayerReducer.activePlayer);
-
     const toggleActivePlayer = () => {
         if (activePlayer === PLAYER_O) {
             dispatch({type: 'TOGGLE_ACTIVE_PLAYER', payload: PLAYER_X})
@@ -53,51 +51,20 @@ const App = () => {
         dispatch({type: 'UPDATE_GAMEFIELD', payload: newState})
     };
 
-    // const updateGamefield = useCallback((id) => {
-    //     setGamefield((state) => {
-    //         const newState = [...state];
-    //         newState[id] = activePlayer;
-    //         return newState;
-    //     });
-    //     toggleActivePlayer();
-    // }, [activePlayer, toggleActivePlayer]);
-
-    //
-    // const [activePlayer, setActivePlayer] = useState(players[0]);
-    // const [gamefield, setGamefield] = useState([
-    //     null, null, null,
-    //     null, null, null,
-    //     null, null, null
-    // ]);
+    const restart = () => {
+        dispatch({type: 'RESTART'})
+    }
 
     const progress = useMemo(() => {
         return gamefield.reduce((count, cell) => cell ? count + 1 : count, 0);
-    },[gamefield]);
+    }, [gamefield]);
     const winner = useMemo(() => getWinner(gamefield), [gamefield]);
     const isEndGame = useMemo(() => winner || progress >= 9, [winner, progress]);
 
-    // const toggleActivePlayer = useCallback(() => {
-    //     if (activePlayer === players[0]) {
-    //         setActivePlayer(players[1]);
-    //     }
-    //     if (activePlayer === players[1]) {
-    //         setActivePlayer(players[0]);
-    //     }
-    // }, [activePlayer]);
-
-    // const updateGamefield = useCallback((id) => {
-    //     setGamefield((state) => {
-    //         const newState = [...state];
-    //         newState[id] = activePlayer;
-    //         return newState;
-    //     });
-    //     toggleActivePlayer();
-    // }, [activePlayer, toggleActivePlayer]);
-
     const cells = useMemo(() => {
-        const newState = [];
+        const cellsArray = [];
         for (let i = 0; i < 9; i++) {
-            newState.push(<Cell
+            cellsArray.push(<Cell
                 key={i}
                 id={i}
                 updateGamefield={updateGamefield}
@@ -105,8 +72,9 @@ const App = () => {
                 value={gamefield[i]}
             />);
         }
-        return newState;
+        return cellsArray;
     }, [gamefield, isEndGame, updateGamefield]);
+
 
     const winnerText = useMemo(() => winner ? `Winner is player '${winner}'!` : 'Draw!', [winner]);
     const activePlayerText = useMemo(() => `Active player: '${activePlayer}'`, [activePlayer]);
@@ -117,6 +85,12 @@ const App = () => {
             <div className={'gamefield'}>
                 {cells}
             </div>
+            {isEndGame
+                ? <button
+                    className={'restart-btn'}
+                    onClick={restart}>Play again!</button>
+                : null
+            }
         </div>
     )
 }

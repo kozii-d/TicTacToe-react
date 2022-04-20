@@ -1,0 +1,14 @@
+.restart-btn {
+  width: 150px;
+  height: 50px;
+  margin-top: 20px;
+  border: 2px solid black;
+  background-color: transparent;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  &:hover {
+    background-color: #d9d9d9;
+  }
+}
