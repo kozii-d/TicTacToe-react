@@ -1,22 +1,21 @@
-import React, {useState} from 'react';
+import React, {useCallback} from 'react';
 
-const Cell = ({id, activePlayer, toggleActivePlayer, updateGamefield, increaseProgress, isEndGame, players}) => {
+const Cell = ({id, updateGamefield, isEndGame, value}) => {
 
-    const [value, setValue] = useState(null)
+    const changeCellValue = useCallback(
+        () => {
+            if (!value && !isEndGame) {
+                updateGamefield(id)
+            }
+        },
+        [value, isEndGame, id]
+    );
 
-    const changeCellValue = () => {
-        if (!value && !isEndGame) {
-            setValue(() => activePlayer)
-            updateGamefield(id, activePlayer)
-            increaseProgress();
-            toggleActivePlayer();
-        }
-    };
 
-    const classes = value === players[0] ? 'cell cell_x' : 'cell cell_o';
+    const classes = value ? 'cell cell_' + value : 'cell';
 
     return (
-        <div onClick={() => changeCellValue()}
+        <div onClick={changeCellValue}
              className={classes}
              id={id}>
             <p className={'cell__content'}>{value}</p>

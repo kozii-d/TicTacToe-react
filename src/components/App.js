@@ -1,102 +1,83 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import Cell from "./Cell";
+
+const PLAYER_X = 'X';
+const PLAYER_O = 'O';
+
+const players = [PLAYER_X, PLAYER_O];
+
+const combos = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
 
 const App = () => {
 
-    const players = ['X', 'O']
-
-    const combos = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-
     const [activePlayer, setActivePlayer] = useState(players[0]);
-    const [winner, setWinner] = useState(null);
-    const [progress, setProgress] = useState(0);
-    const [isEndGame, setIsEndGame] = useState(false);
     const [gamefield, setGamefield] = useState([
         null, null, null,
         null, null, null,
         null, null, null
     ]);
-    const [cells, setCells] = useState([]);
 
-    const checkCombos = () => {
+    const progress = useMemo(() => {
+        return gamefield.reduce((count, cell) => cell ? count + 1 : count, 0);
+    },[gamefield]);
+
+    // проверить и убрать gamefield
+    const getWinner = (gamefield) => {
         combos.forEach(combo => {
             if (gamefield[combo[0]] === players[0] && gamefield[combo[1]] === players[0] && gamefield[combo[2]] === players[0]) {
-                setWinner(() => players[0])
+                return players[0];
             }
             if (gamefield[combo[0]] === players[1] && gamefield[combo[1]] === players[1] && gamefield[combo[2]] === players[1]) {
-                setWinner(() => players[1])
+                return players[1];
             }
         });
+        return null;
     };
 
-    const checkEndGame = () => {
-        if (winner || progress >= 9) {
-            setIsEndGame(() => true);
-        }
-    };
+    const winner = useMemo(() => getWinner(gamefield), [gamefield]);
+    const isEndGame = useMemo(() => winner || progress >= 9, [winner, progress]);
 
-    const increaseProgress = () => {
-        setProgress(state => ++state);
-    }
-
-    const updateGamefield = (id, value) => {
-        setGamefield((state) => {
-            const newState = [...state];
-            newState[id] = value;
-            return newState
-        })
-    };
 
     const toggleActivePlayer = () => {
         if (activePlayer === players[0]) {
-            setActivePlayer(() => players[1]);
+            setActivePlayer(players[1]);
         }
         if (activePlayer === players[1]) {
-            setActivePlayer(() => players[0]);
+            setActivePlayer(players[0]);
         }
     };
 
-    const createCells = () => {
-        setCells(() => {
-            const newState = [];
-            for (let i = 0; i < 9; i++) {
-                newState.push(<Cell
-                    key={i}
-                    id={i}
-                    activePlayer={activePlayer}
-                    toggleActivePlayer={toggleActivePlayer}
-                    updateGamefield={updateGamefield}
-                    increaseProgress={increaseProgress}
-                    isEndGame={isEndGame}
-                    players={players}
-                />);
-            }
+    const updateGamefield = useCallback((id) => {
+        setGamefield((state) => {
+            const newState = [...state];
+            newState[id] = activePlayer;
             return newState;
         })
-    }
+        toggleActivePlayer();
+    }, [activePlayer, toggleActivePlayer]);
 
-    useEffect(() => {
-        createCells();
-        checkCombos();
-        checkEndGame();
-    }, [activePlayer]);
-
-    useEffect(() => {
-        checkEndGame();
-    }, [winner]);
-
-    useEffect(() => {
-        createCells();
-    }, [isEndGame]);
+    const cells = useMemo(() => {
+        const newState = [];
+        for (let i = 0; i < 9; i++) {
+            newState.push(<Cell
+                key={i}
+                id={i}
+                updateGamefield={updateGamefield}
+                isEndGame={isEndGame}
+                value={gamefield[i]}
+            />);
+        }
+        return newState;
+    }, [gamefield, isEndGame]);
 
     const winnerText = winner ? `Winner is player '${winner}'!` : 'Draw!';
     const activePlayerText = `Active player: '${activePlayer}'`
