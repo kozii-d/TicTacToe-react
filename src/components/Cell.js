@@ -8,9 +8,8 @@ const Cell = ({id, updateGamefield, isEndGame, value}) => {
                 updateGamefield(id)
             }
         },
-        [value, isEndGame, id]
+        [value, isEndGame, id, updateGamefield]
     );
-
 
     const classes = value ? 'cell cell_' + value : 'cell';
 

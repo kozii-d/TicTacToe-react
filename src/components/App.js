@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import Cell from "./Cell";
 
 const PLAYER_X = 'X';
@@ -17,6 +17,19 @@ const combos = [
     [2, 4, 6]
 ];
 
+const getWinner = (gamefield) => {
+
+    for (const combo of combos) {
+        if (gamefield[combo[0]] === players[0] && gamefield[combo[1]] === players[0] && gamefield[combo[2]] === players[0]) {
+            return players[0];
+        }
+        if (gamefield[combo[0]] === players[1] && gamefield[combo[1]] === players[1] && gamefield[combo[2]] === players[1]) {
+            return players[1];
+        }
+    }
+    return null;
+};
+
 const App = () => {
 
     const [activePlayer, setActivePlayer] = useState(players[0]);
@@ -29,39 +42,24 @@ const App = () => {
     const progress = useMemo(() => {
         return gamefield.reduce((count, cell) => cell ? count + 1 : count, 0);
     },[gamefield]);
-
-    // проверить и убрать gamefield
-    const getWinner = (gamefield) => {
-        combos.forEach(combo => {
-            if (gamefield[combo[0]] === players[0] && gamefield[combo[1]] === players[0] && gamefield[combo[2]] === players[0]) {
-                return players[0];
-            }
-            if (gamefield[combo[0]] === players[1] && gamefield[combo[1]] === players[1] && gamefield[combo[2]] === players[1]) {
-                return players[1];
-            }
-        });
-        return null;
-    };
-
     const winner = useMemo(() => getWinner(gamefield), [gamefield]);
     const isEndGame = useMemo(() => winner || progress >= 9, [winner, progress]);
 
-
-    const toggleActivePlayer = () => {
+    const toggleActivePlayer = useCallback(() => {
         if (activePlayer === players[0]) {
             setActivePlayer(players[1]);
         }
         if (activePlayer === players[1]) {
             setActivePlayer(players[0]);
         }
-    };
+    }, [activePlayer]);
 
     const updateGamefield = useCallback((id) => {
         setGamefield((state) => {
             const newState = [...state];
             newState[id] = activePlayer;
             return newState;
-        })
+        });
         toggleActivePlayer();
     }, [activePlayer, toggleActivePlayer]);
 
@@ -77,10 +75,10 @@ const App = () => {
             />);
         }
         return newState;
-    }, [gamefield, isEndGame]);
+    }, [gamefield, isEndGame, updateGamefield]);
 
-    const winnerText = winner ? `Winner is player '${winner}'!` : 'Draw!';
-    const activePlayerText = `Active player: '${activePlayer}'`
+    const winnerText = useMemo(() => winner ? `Winner is player '${winner}'!` : 'Draw!', [winner]);
+    const activePlayerText = useMemo(() => `Active player: '${activePlayer}'`, [activePlayer]);
 
     return (
         <div className={'wrapper'}>
