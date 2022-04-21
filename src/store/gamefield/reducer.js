@@ -1,5 +1,6 @@
 import {handleActions} from "redux-actions";
-import {restart, updateGamefield} from "./actions";
+import {updateGamefield} from "./actions";
+import {restart} from "../activePlayer/actions";
 
 const defaultState = {
     gamefield: [
