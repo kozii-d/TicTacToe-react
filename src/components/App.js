@@ -35,14 +35,8 @@ const App = () => {
     const dispatch = useDispatch();
     const gamefield = useSelector(state => state.gamefieldReducer.gamefield);
     const activePlayer = useSelector(state => state.activePlayerReducer.activePlayer);
-    const toggleActivePlayer = () => {
-        if (activePlayer === PLAYER_O) {
-            dispatch({type: 'TOGGLE_ACTIVE_PLAYER', payload: PLAYER_X})
-        }
-        if (activePlayer === PLAYER_X) {
-            dispatch({type: 'TOGGLE_ACTIVE_PLAYER', payload: PLAYER_O})
-        }
-    };
+
+    const toggleActivePlayer = () => dispatch({type: 'TOGGLE_ACTIVE_PLAYER'});
 
     const updateGamefield = (id) => {
         const newState = [...gamefield];
