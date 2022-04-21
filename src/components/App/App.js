@@ -1,6 +1,5 @@
 import React, {useMemo} from 'react';
-import Cell from "./Cell";
-import {useDispatch, useSelector} from "react-redux";
+import Cell from "../Cell";
 
 export const PLAYER_X = 'X';
 const PLAYER_O = 'O';
@@ -31,23 +30,14 @@ const getWinner = (gamefield) => {
     return null;
 };
 
-const App = () => {
-    const dispatch = useDispatch();
-    const gamefield = useSelector(state => state.gamefieldReducer.gamefield);
-    const activePlayer = useSelector(state => state.activePlayerReducer.activePlayer);
+const App = ({toggleActivePlayer, restart, updateGamefield, gamefield, activePlayer}) => {
 
-    const toggleActivePlayer = () => dispatch({type: 'TOGGLE_ACTIVE_PLAYER'});
-
-    const updateGamefield = (id) => {
+    const handleUpdateGamefield = (id) => {
         const newState = [...gamefield];
         newState[id] = activePlayer;
         toggleActivePlayer();
-        dispatch({type: 'UPDATE_GAMEFIELD', payload: newState})
+        updateGamefield(newState);
     };
-
-    const restart = () => {
-        dispatch({type: 'RESTART'})
-    }
 
     const progress = useMemo(() => {
         return gamefield.reduce((count, cell) => cell ? count + 1 : count, 0);
@@ -61,13 +51,13 @@ const App = () => {
             cellsArray.push(<Cell
                 key={i}
                 id={i}
-                updateGamefield={updateGamefield}
+                updateGamefield={handleUpdateGamefield}
                 isEndGame={isEndGame}
                 value={gamefield[i]}
             />);
         }
         return cellsArray;
-    }, [gamefield, isEndGame, updateGamefield]);
+    }, [gamefield, isEndGame, handleUpdateGamefield]);
 
 
     const winnerText = useMemo(() => winner ? `Winner is player '${winner}'!` : 'Draw!', [winner]);

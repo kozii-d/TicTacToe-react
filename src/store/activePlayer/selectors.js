@@ -1,0 +1,1 @@
+export const activePlayer = state => state.activePlayerReducer.activePlayer;

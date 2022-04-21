@@ -1,6 +1,6 @@
 import {createStore, combineReducers} from "redux";
-import {gamefieldReducer} from "./gamefieldReducer";
-import {activePlayerReducer} from  './activePlayerReducer'
+import gamefieldReducer from "./gamefield/reducer";
+import activePlayerReducer from './activePlayer/reducer'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 const rootReducer = combineReducers({
