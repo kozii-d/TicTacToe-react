@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import Cell from "../Cell";
 
 export const PLAYER_X = 'X';
@@ -18,7 +18,6 @@ const combos = [
 ];
 
 const getWinner = (gamefield) => {
-
     for (const combo of combos) {
         if (gamefield[combo[0]] === players[0] && gamefield[combo[1]] === players[0] && gamefield[combo[2]] === players[0]) {
             return players[0];
@@ -32,12 +31,12 @@ const getWinner = (gamefield) => {
 
 const App = ({toggleActivePlayer, restart, updateGamefield, gamefield, activePlayer}) => {
 
-    const handleUpdateGamefield = (id) => {
+    const handleUpdateGamefield = useCallback((id) => {
         const newState = [...gamefield];
         newState[id] = activePlayer;
         toggleActivePlayer();
         updateGamefield(newState);
-    };
+    }, [activePlayer])
 
     const progress = useMemo(() => {
         return gamefield.reduce((count, cell) => cell ? count + 1 : count, 0);
