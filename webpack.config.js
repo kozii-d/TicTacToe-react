@@ -4,9 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
-    entry: './src/index.js',
+    entry: './client/src/index.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, './server/public/static'),
         filename: 'bundle.js'
     },
     module: {
@@ -46,7 +46,7 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-        template: './src/index.html'
+        template: './client/src/index.html'
     }),
         new CleanWebpackPlugin(),
     ],
